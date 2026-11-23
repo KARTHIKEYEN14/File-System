@@ -30,6 +30,16 @@ class FileSystem
         {
             mkdirExec(arg);
         }
+
+        if(func.equals("cd"))
+        {
+            cdExec(arg);
+        }
+
+        if(func.equals("ls"))
+        {
+            lsExec();
+        }
     }
 
     private void pwdExec(node curr)
@@ -64,5 +74,65 @@ class FileSystem
         nDir.parent = curr;
         curr.children.add(nDir);
         System.out.println("Directory added");
+    }
+
+    private void cdExec(String arg)
+    {
+        node temp = curr;
+        Queue<node> que = new LinkedList<>();
+        que.add(temp);
+        List<String> dirLs = new ArrayList<>();
+        boolean dirFound = false;
+
+        while(que.isEmpty() != true && temp != null)
+        {
+            temp = que.poll();
+            dirLs.add(temp.name);
+            if(temp.name.equals(arg))
+            {
+                dirFound = true;
+                curr = temp;
+            }
+
+            for(node ele : temp.children)
+            {
+                if(ele.type.equals("dir"))
+                {
+                    que.add(ele);
+                }
+            }
+        }
+
+        if(dirFound)
+        {
+            System.out.print("Current Directory > ");
+            for(String ele : dirLs)
+            {
+                if(ele.equals("\\"))
+                {
+                    System.out.print("\\"+"home");
+                }
+                else
+                    System.out.print("\\"+ele);
+            }
+            System.out.println();
+        }
+    }
+
+    private void lsExec()
+    {
+        node temp = curr;
+        Queue<node> que = new LinkedList<>();
+        que.add(temp);
+        System.out.println("Type"+" --- "+"Name");
+        while(que.isEmpty() != true && temp != null)
+        {
+            temp = que.poll();
+            System.out.println(temp.type+"  --- "+temp.name);
+            for(node ele : temp.children)
+            {
+                que.add(ele);
+            }
+        }
     }
 }
